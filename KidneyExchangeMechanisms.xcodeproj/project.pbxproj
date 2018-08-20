@@ -7,7 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9009993E211800F90029F294 /* AllPathsOfLengthK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */; };
 		90B236A8210EE2CD00023274 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B236A7210EE2CD00023274 /* main.cpp */; };
+		90B236B0210EE3A100023274 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236AF210EE3A100023274 /* CoreFoundation.framework */; };
+		90B236B2210EE3A900023274 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236B1210EE3A900023274 /* IOKit.framework */; };
+		90B236B4210EE3CA00023274 /* libconcert.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236B3210EE3CA00023274 /* libconcert.a */; };
+		90B236B6210EE3E000023274 /* libcplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236B5210EE3E000023274 /* libcplex.a */; };
+		90B236B9210EE3F100023274 /* libilocplex.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236B7210EE3F100023274 /* libilocplex.a */; };
+		90B236BA210EE3F100023274 /* libcplexdistmip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236B8210EE3F100023274 /* libcplexdistmip.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +30,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9009993B211800C80029F294 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
+		9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AllPathsOfLengthK.cpp; sourceTree = "<group>"; };
+		9009993D211800F90029F294 /* AllPathsOfLengthK.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AllPathsOfLengthK.hpp; sourceTree = "<group>"; };
 		90B236A4210EE2CD00023274 /* KidneyExchangeMechanisms */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = KidneyExchangeMechanisms; sourceTree = BUILT_PRODUCTS_DIR; };
 		90B236A7210EE2CD00023274 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		90B236AF210EE3A100023274 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		90B236B1210EE3A900023274 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		90B236B3210EE3CA00023274 /* libconcert.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libconcert.a; path = "../../../../Applications/CPLEX_Studio128/concert/lib/x86-64_osx/static_pic/libconcert.a"; sourceTree = "<group>"; };
+		90B236B5210EE3E000023274 /* libcplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplex.a; path = "../../../../Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic/libcplex.a"; sourceTree = "<group>"; };
+		90B236B7210EE3F100023274 /* libilocplex.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libilocplex.a; path = "../../../../Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic/libilocplex.a"; sourceTree = "<group>"; };
+		90B236B8210EE3F100023274 /* libcplexdistmip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcplexdistmip.a; path = "../../../../Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic/libcplexdistmip.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +48,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90B236B9210EE3F100023274 /* libilocplex.a in Frameworks */,
+				90B236BA210EE3F100023274 /* libcplexdistmip.a in Frameworks */,
+				90B236B6210EE3E000023274 /* libcplex.a in Frameworks */,
+				90B236B4210EE3CA00023274 /* libconcert.a in Frameworks */,
+				90B236B2210EE3A900023274 /* IOKit.framework in Frameworks */,
+				90B236B0210EE3A100023274 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +63,10 @@
 		90B2369B210EE2CC00023274 = {
 			isa = PBXGroup;
 			children = (
+				9009993B211800C80029F294 /* Header.h */,
 				90B236A6210EE2CD00023274 /* KidneyExchangeMechanisms */,
 				90B236A5210EE2CD00023274 /* Products */,
+				90B236AE210EE3A100023274 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +81,24 @@
 		90B236A6210EE2CD00023274 /* KidneyExchangeMechanisms */ = {
 			isa = PBXGroup;
 			children = (
+				9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */,
+				9009993D211800F90029F294 /* AllPathsOfLengthK.hpp */,
 				90B236A7210EE2CD00023274 /* main.cpp */,
 			);
 			path = KidneyExchangeMechanisms;
+			sourceTree = "<group>";
+		};
+		90B236AE210EE3A100023274 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				90B236B8210EE3F100023274 /* libcplexdistmip.a */,
+				90B236B7210EE3F100023274 /* libilocplex.a */,
+				90B236B5210EE3E000023274 /* libcplex.a */,
+				90B236B3210EE3CA00023274 /* libconcert.a */,
+				90B236B1210EE3A900023274 /* IOKit.framework */,
+				90B236AF210EE3A100023274 /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90B236A8210EE2CD00023274 /* main.cpp in Sources */,
+				9009993E211800F90029F294 /* AllPathsOfLengthK.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,9 +216,18 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Applications/CPLEX_Studio128/cplex/include,
+					/Applications/CPLEX_Studio128/concert/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"/Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic\"",
+					"\"/Applications/CPLEX_Studio128/concert/lib/x86-64_osx/static_pic\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DIL_STD";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -228,8 +277,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Applications/CPLEX_Studio128/cplex/include,
+					/Applications/CPLEX_Studio128/concert/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"/Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic\"",
+					"\"/Applications/CPLEX_Studio128/concert/lib/x86-64_osx/static_pic\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "-DIL_STD";
 				SDKROOT = macosx;
 			};
 			name = Release;
