@@ -16,11 +16,11 @@ class Paths
 {
     public:
     
-    vector<vector<int>> getPaths(int pathLen, vector<vector<int>>&AdjMatrix,int Nodes);
+    vector<vector<unsigned int>> getPaths(unsigned int pathLen, vector<vector<unsigned int>>&AdjMatrix,unsigned int Nodes);
     
-//    void getPathsHelper(vector<vector<int>>&AllPaths, vector<vector<int>>&Adj, int pLength, vector<bool>&seen, vector<int>&available,vector<int>&curPath,int Nodes);
-//
-//    void printPaths(vector<vector<int>>&AllPaths,int Nodes);
+    void printPaths(vector<vector<unsigned int>>&AllPaths,unsigned int Nodes);
+    
+    void getPathsHelper(vector<vector<unsigned int>>&AllPaths, vector<vector<unsigned int>>&Adj, unsigned int pLength, vector<bool>&seen, vector<unsigned int>&available,vector<unsigned int>&curPath,unsigned int Nodes);
     
     
     

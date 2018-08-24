@@ -10,12 +10,12 @@
 #include <iostream>
 using namespace std;
 
-void getPathsHelper(vector<vector<int>>&AllPaths, vector<vector<int>>&Adj, int pLength, vector<bool>&seen, vector<int>&available,vector<int>&curPath,int Nodes)
+void Paths::getPathsHelper(vector<vector<unsigned int>>&AllPaths, vector<vector<unsigned int>>&Adj, unsigned int pLength, vector<bool>&seen, vector<unsigned int>&available,vector<unsigned int>&curPath,unsigned int Nodes)
 {
-    vector<int> neighbors(available);
-    for(int i = 0; i < neighbors.size(); i++)
+    vector<unsigned int> neighbors(available);
+    for(unsigned int i = 0; i < neighbors.size(); i++)
     {
-        int curr = neighbors[i];
+        unsigned int curr = neighbors[i];
         curPath.push_back(curr);
         seen[curr] = true;
         if(curPath.size() == pLength)
@@ -26,7 +26,7 @@ void getPathsHelper(vector<vector<int>>&AllPaths, vector<vector<int>>&Adj, int p
         {
             available.clear();
             // Initialize available vector here to nodes still unseen and are adjacent to ith nodes.
-            for(int j = 0; j < Nodes; j++)
+            for(unsigned int j = 0; j < Nodes; j++)
             {
                 if(!seen[j] && Adj[curr][j]!=0)
                 {
@@ -42,12 +42,12 @@ void getPathsHelper(vector<vector<int>>&AllPaths, vector<vector<int>>&Adj, int p
     }
 }
 
-void printPaths(vector<vector<int>>&AllPaths,int Nodes)
+void Paths::printPaths(vector<vector< unsigned int>>&AllPaths,unsigned int Nodes)
 {
-    for(int i = 0; i < AllPaths.size(); i++)
+    for(unsigned int i = 0; i < AllPaths.size(); i++)
     {
         cout<<"[ ";
-        for(int j = 0; j < AllPaths[i].size(); j++)
+        for(unsigned int j = 0; j < AllPaths[i].size(); j++)
         {
             cout<<AllPaths[i][j]<<" ";
         }
@@ -55,15 +55,15 @@ void printPaths(vector<vector<int>>&AllPaths,int Nodes)
     }
 }
 
-vector<vector<int>> Paths::getPaths(int pLength, vector<vector<int>>&Adj, int Nodes)
+vector<vector<unsigned int>> Paths::getPaths(unsigned int pLength, vector<vector<unsigned int>>&Adj, unsigned int Nodes)
 {
-    vector<vector<int>> AllPaths;
+    vector<vector<unsigned int>> AllPaths;
     vector<bool> seen(Nodes,false);
-    vector<int> available;
-    vector<int> curPath;
-    for(int i = 0; i < Nodes; i++)
+    vector<unsigned int> available;
+    vector<unsigned int> curPath;
+    for(unsigned int i = 0; i < Nodes; i++)
     {
-        for(int j = 0; j < Nodes; j++)
+        for(unsigned int j = 0; j < Nodes; j++)
         {
             if(Adj[i][j]>0)
                 available.push_back(j);
