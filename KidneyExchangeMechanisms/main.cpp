@@ -6,10 +6,11 @@
 //  Copyright © 2018 Sameer Desai. All rights reserved.
 //  
 
-#include <ilcplex/ilocplex.h>
+#include <ilcplex/ilocplex.h>     /* Library for CPLEX */
 #include "AllPathsOfLengthK.hpp"  /* Library to enumerate all paths of given length */
-#include "jsonReader.hpp"  /* Library to read and manipulate JSON data */
-#include <ilconcert/iloenv.h>
+#include "jsonHandler.hpp"         /* Library to read and manipulate JSON data */
+#include <chrono>
+using namespace std::chrono;
 ILOSTLBEGIN
 
 typedef IloArray<IloIntArray> IntMatrix; /* 2D Matrix to store Weight-Matrix*/
@@ -18,53 +19,65 @@ typedef IloArray<IloNumVarArray> NumVarMatrix; /* 2D Matrix of Decision Variable
 class LpSolver
 {
 private:
-    string json_filename;
-    string dat_filename;
-    string default_filename_json;
-    string default_filename_dat;
+    string json_filename; /* JSON filename specified by user */
+    string dat_filename;  /* DAT filename specified by user */
+    string default_filename_json; /* Default JSON filename */
+    string default_filename_dat;  /* Default DAT filename */
     
 public:
-    unsigned int nodes;
-    unsigned int pLength;
-    vector<vector<unsigned int>> Adj_Matrix;
-    vector<vector<unsigned int>> Res_Matrix;
-    vector<vector<unsigned int>> AllPaths;
-    vector<pair<unsigned int, unsigned int>> MatchedPairs;
-    Paths p;
-    jsonData *jd;
-    vector<vector<pair<int,int>>> edges;
+    unsigned int nodes;   /* Number of P-D Pairs / Vertices in the Compatibility Graph */
+    unsigned int pLength; /* Disallow paths of length greater than or equal to */
+    vector<vector<unsigned int>> Adj_Matrix; /* Stores the Adj-Matrix of given instance */
+    vector<vector<double>> Res_Matrix;       /* Stores the result of LP Solver i.e. which pairs were matched*/
+    vector<vector<unsigned int>> AllPaths;   /* Stores all pLength paths */
+    //vector<pair<unsigned int, unsigned int>> MatchedPairs;  /* */
+    Paths p;                                                /* Object of Paths Class*/
+    jsonData *jd;                                           /* Object of JsonData Class*/
+    vector<vector<pair<unsigned int,unsigned int>>> edges;  /* Stores all edges in the given instance*/
+    vector<vector<unsigned int>>cycles; /* Stores all disjoint cycles/exchanges once LP solver solves */
+    map<unsigned int, unsigned int> myPairs;   /* Map to store the matched pairs as in solution */
+    int pairsIncluded = 0;
+    high_resolution_clock::time_point start;
+    /* Initializes the default parameters */
     LpSolver()
     {
         this->default_filename_dat = "/Users/sameerdesai/Documents/KidneyExchangeMechanisms/KidneyExchangeMechanisms/kidneyexample.dat";
         this->default_filename_json = "/Users/sameerdesai/Documents/KE2.json";
         this->pLength = 3;
     }
+    
+    /* Sets the JSON filename */
     void setJsonFilename(string filename)
     {
         json_filename = filename;
         jd = new jsonData(json_filename);
     }
     
+    /* Sets the DAT filename */
     void setDatFilename(string filename)
     {
         dat_filename = filename;
     }
     
+    /* Sets the path length specified */
     void setPathLength(unsigned int len)
     {
         pLength = len;
     }
     
+    /* Read JSON file data */
     void readJsonFile()
     {
-        jd->mapAllPairs();
-        jd->buildCompatibilityGraph();
+        jd->mapAllPairs(); /* Invokes the mapper from JSON class */
+        jd->buildCompatibilityGraph(); /* Invokes the graph builder */
+        
         nodes = (int)jd->Compatibility_Graph.size();
         Adj_Matrix.resize(nodes,vector<unsigned int>(nodes,0));
-        Res_Matrix.resize(nodes,vector<unsigned int>(nodes,0));
+        Res_Matrix.resize(nodes,vector<double>(nodes,0.0));
         Adj_Matrix = jd->Compatibility_Graph;
     }
-    /* Read in the Weight/Adjacency Matrix*/
+    
+    /* Read in the Weight/Adjacency Matrix from a DAT file directly */
     void readDatFile()
     {
         ifstream f(dat_filename,ios::in);
@@ -75,7 +88,7 @@ public:
         }
         f>> nodes;
         Adj_Matrix.resize(nodes,vector<unsigned int>(nodes,0));
-        Res_Matrix.resize(nodes,vector<unsigned int>(nodes,0));
+        Res_Matrix.resize(nodes,vector<double>(nodes,0.0));
         for(unsigned int i = 0; i < nodes; i++)
         {
             for(unsigned int j = 0; j < nodes; j++)
@@ -85,6 +98,7 @@ public:
         }
         
     }
+    
     /* Get all paths of given length from library subroutine*/
     void populateAllPaths()
     {
@@ -103,6 +117,8 @@ public:
             }
         }
     }
+    
+    /* Builds a constraint name with given string identifier and integer ID */
     char* createConstraintName(string constraintText, unsigned int id )
     {
         string idx = to_string(id);
@@ -112,6 +128,7 @@ public:
         strcpy(constraintName, constraintID.c_str());
         return constraintName;
     }
+    /* Builds a Decision Variable name with given integer IDs */
     char* createDVName(unsigned int id1, unsigned int id2)
     {
         string idx = to_string(id1);
@@ -122,7 +139,9 @@ public:
         strcpy(dvName, numericID.c_str());
         return dvName;
     }
-    void printMatrix(vector<vector<unsigned int>>& Mat)
+    
+    /* Prints the result matrix */
+    void printMatrix(vector<vector<double>>& Mat)
     {
         for(unsigned int i = 0; i <Mat.size(); i++)
         {
@@ -134,6 +153,7 @@ public:
         }
     }
     
+    /* Map all cplex-matched donors and patients */
     void setMatchedPairs()
     {
         for(unsigned int i = 0; i < Res_Matrix.size(); i++)
@@ -142,73 +162,126 @@ public:
             {
                 if(Res_Matrix[i][j] == 1)
                 {
-                    int rID = jd->getID(i);
-                    int dID = jd->getID(j);
-                    MatchedPairs.push_back(make_pair(dID,rID));
+                    //int rID = jd->getID(i);
+                    //int dID = jd->getID(j);
+                    //MatchedPairs.push_back(make_pair(dID,rID));
+                    //MatchedPairs.push_back(make_pair(i,j));
+                    pairsIncluded++;
+                    myPairs[i] = j;
                 }
             }
         }
     }
     
-    void printMatches()
+    /* Fetches the exchange cycles involved using DFS*/
+    void obtainCycles()
     {
-        for(unsigned int i = 0; i < MatchedPairs.size(); i++)
+        vector<bool>collected(myPairs.size(),false);
+        vector<unsigned int> cyclops;
+        cout<<myPairs.size()<<endl;
+        for(auto it = myPairs.begin(); it!= myPairs.end(); it++)
         {
-            cout<<"Patient "<<MatchedPairs[i].second<<" gets Kidney from "<<MatchedPairs[i].first<<endl;
+            if(!collected[it->first])
+            {
+                cyclops.push_back(it->first);
+                collected[it->first] = true;
+                //cyclops.push_back(it->second);
+                auto itr = myPairs.find(it->second);
+                while(itr!= myPairs.end() && !collected[itr->first])
+                {
+                    cyclops.push_back(itr->first);
+                    collected[itr->first] = true;
+                    //cyclops.push_back(itr->second);
+                    itr = myPairs.find(itr->second);
+                }
+                cyclops.push_back(itr->first);
+                cycles.push_back(cyclops);
+                cyclops.clear();
+            }
         }
-        jd->printToJson(MatchedPairs);
+        
+    }
+    /* Prints the cycles involved in the final exchange */
+    void printCycles()
+    {
+        //jd->printExchangesToJson(cycles,pairsIncluded);
+        for(unsigned int i = 0; i < cycles.size(); i++)
+        {
+            for(unsigned int j = 0; j < cycles[i].size(); j++)
+            {
+                cout<<cycles[i][j]<<"->";
+            }
+            cout<<endl;
+        }
     }
     
     
     
-    
-};
-
-int main(int argc, const char * argv[])
-{
-    IloEnv env;
-    try
+    /* Prints the matched pairs to JSON file and logfile */
+    void printMatches()
     {
-        LpSolver solver;
-        char filechoice;
+        for(auto i = myPairs.begin(); i != myPairs.end(); i++)
+        {
+            cout<<"Patient "<<jd->getKeyID(i->first)<<" gets Kidney from "<<jd->getKeyID(i->second)<<endl;
+        }
+        jd->printToJson(myPairs,json_filename);
+    }
+    
+    void interactor()
+    {
+        //char filechoice;
         string pathName;
         unsigned int len;
         cout<<"Welcome to Kidney Exchange Solver"<<endl;
-        cout<<"Choose File Type: (a)JSON File, (b)DAT File"<<endl;
-        cin>>filechoice;
-        switch(filechoice)
-        {
-            case 'a':
-                cout<<"Enter the pathname for your JSON file:"<<endl;
-                cin>>pathName;
-                solver.setJsonFilename(pathName);
-                solver.readJsonFile();
-                break;
-                
-                
-            case 'b':
-                cout<<"Enter the pathname for your DAT file:"<<endl;
-                cin>>pathName;
-                solver.setDatFilename(pathName);
-                solver.readDatFile();
-                break;
-                
-            default :
-                cout<<"Going ahead with default files"<<endl;
-                if(filechoice == 'a')
-                    solver.readJsonFile();
-                else
-                    solver.readDatFile();
-                
-        }
+        cout<<"Enter the pathname for your JSON file:"<<endl;
+        cin>>pathName;
         cout<<"Enter the value of L for path length constraint:";
         cin>>len;
-        solver.setPathLength(len);
+        setPathLength(len);
+        setJsonFilename(pathName);
+        start = high_resolution_clock::now();
+        readJsonFile();
+//        cout<<"Choose File Type: (a)JSON File, (b)DAT File"<<endl;
+//                cin>>filechoice;
+//        switch(filechoice)
+//        {
+//            case 'a':
+//                cout<<"Enter the pathname for your JSON file:"<<endl;
+//                cin>>pathName;
+//                setJsonFilename(pathName);
+//                auto start = high_resolution_clock::now();
+//                readJsonFile();
+//                break;
+//
+//
+//            case 'b': // Not yet configured completely
+//                cout<<"Enter the pathname for your DAT file:"<<endl;
+//                cin>>pathName;
+//                setDatFilename(pathName);
+//                readDatFile();
+//                break;
+//
+//            default : // Not yet configured completely
+//                cout<<"Going ahead with default files"<<endl;
+//                readJsonFile();
+//
+//        }
         
+    }
     
-        /* Read in the Weight/Adjacency Matrix*/
+};
+
+
+int main(int argc, const char * argv[])
+{
+    IloEnv env;  /* Construct the CPLEX environment */
+    try
+    {
+        LpSolver solver;
+        solver.interactor(); /* Interact with user */
+        
+        /* Initialise the CPLEX variables and read in the Weight/Adjacency Matrix*/
         IntMatrix weights(env,solver.nodes);
-        solver.printMatrix(solver.Adj_Matrix);
         for(unsigned int i = 0; i < solver.nodes; i++)
         {
             weights[i] = IloIntArray(env,solver.nodes);
@@ -223,7 +296,7 @@ int main(int argc, const char * argv[])
         }
         
 
-    
+        /* Define a complete optimization model that can later be extracted to a IloCplex object */
         IloModel model(env);
         
         /* Decision variables for each of the edges in the graph.*/
@@ -232,7 +305,7 @@ int main(int argc, const char * argv[])
         /*Expression Arrays to store the sum of all edges into and out of that vertex in question.*/
         for(unsigned int i = 0; i < solver.nodes; i++)
         {
-            s.add(IloNumVarArray(env,solver.nodes,0,1,ILOFLOAT)); // ILOBOOL for 0/1 values
+            s.add(IloNumVarArray(env,solver.nodes,0,1,ILOBOOL)); // ILOBOOL for 0/1 values
         }
         
         /* Naming all the decision variables */
@@ -245,6 +318,9 @@ int main(int argc, const char * argv[])
             }
             
         }
+        /* Populate all paths and required edge data to be used in constraint making */
+        solver.populateAllPaths();
+        solver.populateEdgeData();
         
         /* For all vertices   v in V , where e_out = (v_i,v_j) and e_in = (v_j,v_i) */
         /* Adding Constraint 1: Sigma(e_out) - Sigma(e_in) = 0       (aka) Conservation Constraint.*/
@@ -298,13 +374,14 @@ int main(int argc, const char * argv[])
                 unsigned int idy = solver.edges[i][j].second;
                 PathSum.add(s[idx][idy]);
             }
-            IloConstraint pathLengthConstraint(IloSum(PathSum) <= (IloInt)solver.pLength-1);
+            IloConstraint pathLengthConstraint(IloSum(PathSum) <= (IloInt)solver.pLength - 1);
             char* constraintName3 = solver.createConstraintName("Path_Originating_From_",i);
             pathLengthConstraint.setName(constraintName3);
             model.add(pathLengthConstraint);
             PathSum.end();
         }
         
+        /* Create and Add the Objective function: MAXIMIZE : Sigma (e_out * w(e)) */
         IloExpr obj(env);
         for(IloInt i = 0; i < solver.nodes; i++)
         {
@@ -314,19 +391,23 @@ int main(int argc, const char * argv[])
             }
         }
         
+        /* Adding the Objective Function */
         IloObjective MaxCovers = IloMaximize(env, obj);
         MaxCovers.setName("Max_Cycle_Covers_Objective");
         model.add(MaxCovers);
         obj.end();
         
-        IloCplex cplex(env);
-        
+        IloCplex cplex(env); /* Create a CPLEX object for solving th model */
         
         cplex.setName("KidneyExchangeByEdgeCovers");
-        cplex.extract(model);
-        cplex.exportModel ("/Users/sameerdesai/Documents/KidneyExchangeMechanisms/KidneyExchangeMechanisms/KE.lp");
+        cplex.extract(model); /* Extract the model created into CPLEX object */
+        cplex.exportModel ("/Users/sameerdesai/Downloads/MTP\ Project\ Workspace/KidneyExchangeMechanisms/KidneyExchangeMechanisms/KE1.lp");
+        /* Export the OPtimization model created to a file */
+        
+        /* Keep track of time elapsed in solving the LP */
         IloTimer clock(env);
         clock.start();
+        /* Solve the model */
         if (cplex.solve()) {
             cout << "Solution status: " << cplex.getStatus() << endl;
             cout << "Number of Exchanges(Optimal Value) = " << cplex.getObjValue() << endl;
@@ -352,9 +433,14 @@ int main(int argc, const char * argv[])
             }
             
         }
-        solver.printMatrix(solver.Res_Matrix);
-        solver.setMatchedPairs();
-        solver.printMatches();
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - solver.start);
+        cout << "Time taken:"<< (double)duration.count()/1000 << " seconds" << endl;
+        //solver.printMatrix(solver.Res_Matrix); /* Prints the Resultant Matrix */
+        solver.setMatchedPairs(); /* Invokes the function to Map all matched patients and donors */
+        //solver.printMatches();    /* Invokes the function to print all matched pairs */
+        solver.obtainCycles();    /* Fetch all the cycles involved in the exchange */
+        //solver.printCycles();     /* Print all cycles involved */
     }
     catch(IloException &e)
     {

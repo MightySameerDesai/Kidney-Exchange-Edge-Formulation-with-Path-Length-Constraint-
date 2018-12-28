@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9009993E211800F90029F294 /* AllPathsOfLengthK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */; };
-		901759A5212FCC4000F7A413 /* jsonReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 901759A3212FCC4000F7A413 /* jsonReader.cpp */; };
+		901759A5212FCC4000F7A413 /* jsonHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 901759A3212FCC4000F7A413 /* jsonHandler.cpp */; };
 		901759A7212FD0CF00F7A413 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 901759A6212FD0CE00F7A413 /* libjsoncpp.a */; };
 		90B236A8210EE2CD00023274 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90B236A7210EE2CD00023274 /* main.cpp */; };
 		90B236B0210EE3A100023274 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90B236AF210EE3A100023274 /* CoreFoundation.framework */; };
@@ -34,9 +34,14 @@
 /* Begin PBXFileReference section */
 		9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AllPathsOfLengthK.cpp; sourceTree = "<group>"; };
 		9009993D211800F90029F294 /* AllPathsOfLengthK.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AllPathsOfLengthK.hpp; sourceTree = "<group>"; };
-		901759A3212FCC4000F7A413 /* jsonReader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = jsonReader.cpp; sourceTree = "<group>"; };
-		901759A4212FCC4000F7A413 /* jsonReader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = jsonReader.hpp; sourceTree = "<group>"; };
+		901759A3212FCC4000F7A413 /* jsonHandler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = jsonHandler.cpp; sourceTree = "<group>"; };
+		901759A4212FCC4000F7A413 /* jsonHandler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = jsonHandler.hpp; sourceTree = "<group>"; };
 		901759A6212FD0CE00F7A413 /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = ../jsoncpp/build/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
+		908D2BCF21367952001B7461 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../../../../usr/local/Cellar/boost/1.67.0_1/lib/libboost_filesystem.a; sourceTree = "<group>"; };
+		908D2BD1213679B8001B7461 /* libboost_filesystem-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_filesystem-mt.a"; path = "../../../../usr/local/Cellar/boost/1.67.0_1/lib/libboost_filesystem-mt.a"; sourceTree = "<group>"; };
+		908D2BD321367AA5001B7461 /* libboost_filesystem.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_filesystem.dylib; path = ../../../../usr/local/Cellar/boost/1.67.0_1/lib/libboost_filesystem.dylib; sourceTree = "<group>"; };
+		908D2BD521367AA9001B7461 /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "../../../../usr/local/Cellar/boost/1.67.0_1/lib/libboost_filesystem-mt.dylib"; sourceTree = "<group>"; };
+		908D2BD7213698E3001B7461 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../../boost_1_68_0/lib/libboost_filesystem.a; sourceTree = "<group>"; };
 		90B236A4210EE2CD00023274 /* KidneyExchangeMechanisms */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = KidneyExchangeMechanisms; sourceTree = BUILT_PRODUCTS_DIR; };
 		90B236A7210EE2CD00023274 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		90B236AF210EE3A100023274 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -88,8 +93,8 @@
 				9009993C211800F90029F294 /* AllPathsOfLengthK.cpp */,
 				9009993D211800F90029F294 /* AllPathsOfLengthK.hpp */,
 				90B236A7210EE2CD00023274 /* main.cpp */,
-				901759A3212FCC4000F7A413 /* jsonReader.cpp */,
-				901759A4212FCC4000F7A413 /* jsonReader.hpp */,
+				901759A3212FCC4000F7A413 /* jsonHandler.cpp */,
+				901759A4212FCC4000F7A413 /* jsonHandler.hpp */,
 			);
 			path = KidneyExchangeMechanisms;
 			sourceTree = "<group>";
@@ -97,6 +102,11 @@
 		90B236AE210EE3A100023274 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				908D2BD7213698E3001B7461 /* libboost_filesystem.a */,
+				908D2BD521367AA9001B7461 /* libboost_filesystem-mt.dylib */,
+				908D2BD321367AA5001B7461 /* libboost_filesystem.dylib */,
+				908D2BD1213679B8001B7461 /* libboost_filesystem-mt.a */,
+				908D2BCF21367952001B7461 /* libboost_filesystem.a */,
 				901759A6212FD0CE00F7A413 /* libjsoncpp.a */,
 				90B236B8210EE3F100023274 /* libcplexdistmip.a */,
 				90B236B7210EE3F100023274 /* libilocplex.a */,
@@ -165,7 +175,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90B236A8210EE2CD00023274 /* main.cpp in Sources */,
-				901759A5212FCC4000F7A413 /* jsonReader.cpp in Sources */,
+				901759A5212FCC4000F7A413 /* jsonHandler.cpp in Sources */,
 				9009993E211800F90029F294 /* AllPathsOfLengthK.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +249,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DIL_STD";
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -302,6 +313,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-DIL_STD";
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -310,6 +322,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/Applications/CPLEX_Studio128/cplex/include,
+					/Applications/CPLEX_Studio128/concert/include,
+					/Users/sameerdesai/Documents/jsoncpp/include,
+					/Users/sameerdesai/boost_1_68_0/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"/Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic\"",
+					"\"/Applications/CPLEX_Studio128/concert/lib/x86-64_osx/static_pic\"",
+					"\"$(SRCROOT)/../jsoncpp/include/json\"",
+					"\"$(SRCROOT)/../jsoncpp/build/src/lib_json\"",
+					"\"$(SRCROOT)/../../boost_1_68_0/lib\"",
+				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -318,6 +344,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/Applications/CPLEX_Studio128/cplex/include,
+					/Applications/CPLEX_Studio128/concert/include,
+					/Users/sameerdesai/Documents/jsoncpp/include,
+					/Users/sameerdesai/boost_1_68_0/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"/Applications/CPLEX_Studio128/cplex/lib/x86-64_osx/static_pic\"",
+					"\"/Applications/CPLEX_Studio128/concert/lib/x86-64_osx/static_pic\"",
+					"\"$(SRCROOT)/../jsoncpp/include/json\"",
+					"\"$(SRCROOT)/../jsoncpp/build/src/lib_json\"",
+					"\"$(SRCROOT)/../../boost_1_68_0/lib\"",
+				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
