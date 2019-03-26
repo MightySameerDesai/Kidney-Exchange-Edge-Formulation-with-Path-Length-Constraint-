@@ -321,6 +321,9 @@ int main(int argc, const char * argv[])
         /* Populate all paths and required edge data to be used in constraint making */
         solver.populateAllPaths();
         solver.populateEdgeData();
+        auto mid = high_resolution_clock::now();
+        auto mid_duration = duration_cast<milliseconds>(mid - solver.start);
+        cout<<"Time Elapsed in Pre-Computation:"<<(double)mid_duration.count()/1000 << " seconds" << endl;
         
         /* For all vertices   v in V , where e_out = (v_i,v_j) and e_in = (v_j,v_i) */
         /* Adding Constraint 1: Sigma(e_out) - Sigma(e_in) = 0       (aka) Conservation Constraint.*/
@@ -434,13 +437,14 @@ int main(int argc, const char * argv[])
             
         }
         auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(stop - solver.start);
-        cout << "Time taken:"<< (double)duration.count()/1000 << " seconds" << endl;
+        auto duration = duration_cast<milliseconds>(stop - mid);
+        cout<<"Time Elapsed in Pre-Computation:"<<(double)mid_duration.count()/1000 << " seconds" << endl;
+        cout<<"Time Elapsed in LP Solving     :"<< (double)duration.count()/1000 << " seconds" << endl;
         //solver.printMatrix(solver.Res_Matrix); /* Prints the Resultant Matrix */
         solver.setMatchedPairs(); /* Invokes the function to Map all matched patients and donors */
         //solver.printMatches();    /* Invokes the function to print all matched pairs */
         solver.obtainCycles();    /* Fetch all the cycles involved in the exchange */
-        //solver.printCycles();     /* Print all cycles involved */
+        solver.printCycles();     /* Print all cycles involved */
     }
     catch(IloException &e)
     {
